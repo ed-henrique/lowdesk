@@ -1121,6 +1121,9 @@
   .border-primary {
     border-color: var(--primary);
   }
+  .border-red-500 {
+    border-color: var(--color-red-500);
+  }
   .border-transparent {
     border-color: transparent;
   }

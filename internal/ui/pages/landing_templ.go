@@ -10,7 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"github.com/axzilla/templui/component/button"
-	"github.com/ed-henrique/lowdesk/ui/layouts"
+	"github.com/ed-henrique/lowdesk/internal/ui/layouts"
 )
 
 func Landing() templ.Component {
