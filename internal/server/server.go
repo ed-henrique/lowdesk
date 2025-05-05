@@ -76,7 +76,12 @@ func (s *Server) AddRoutes() {
 
 	s.r.Handle("GET /assets/", http.StripPrefix("/assets/", assetsHandler))
 
+	// Pages
+	s.r.Handle("GET /tickets/", s.addHandler(handlers.TicketsGetAll))
 	s.r.Handle("GET /tickets/create/", s.addHandler(handlers.TicketsCreate))
+
+	// API
+	s.r.Handle("POST /tickets/create/", s.addHandler(handlers.APITicketsCreate))
 }
 
 func (s *Server) Run() {

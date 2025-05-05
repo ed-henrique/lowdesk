@@ -12,6 +12,7 @@ server:
 	--build.delay "100" \
 	--build.exclude_dir "node_modules" \
 	--build.include_ext "go" \
+	--build.include_ext "sql" \
 	--build.stop_on_error "false" \
 	--misc.clean_on_exit true
 

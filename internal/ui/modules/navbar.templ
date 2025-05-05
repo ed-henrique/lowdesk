@@ -1,8 +1,36 @@
 package modules
 
+import (
+	"github.com/axzilla/templui/component/button"
+	"github.com/axzilla/templui/component/dropdown"
+	"github.com/axzilla/templui/icon"
+)
+
 templ Navbar() {
 	<nav class="border-b py-3">
-		<div class="container mx-auto px-4 flex justify-end">
+		<div class="container mx-auto px-4 flex justify-between">
+			@dropdown.Dropdown() {
+				@dropdown.Trigger() {
+					@button.Button(button.Props{
+						Variant: button.VariantGhost,
+					}) {
+						Tickets
+					}
+				}
+				@dropdown.Content(dropdown.ContentProps{
+					Width: "w-56",
+				}) {
+					@dropdown.Item(dropdown.ItemProps{
+						Class: "cursor-pointer",
+						Href:  "/tickets/create/",
+					}) {
+						<span class="flex items-center">
+							@icon.Plus(icon.Props{Size: 16, Class: "mr-2"})
+							Create
+						</span>
+					}
+				}
+			}
 			@ThemeSwitcher()
 		</div>
 	</nav>

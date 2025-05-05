@@ -7,14 +7,15 @@ package models
 
 import (
 	"context"
+	"database/sql"
 )
 
-const getTickets = `-- name: GetTickets :many
-SELECT id, content, created_at FROM TICKETS
+const getAllTickets = `-- name: GetAllTickets :many
+SELECT id, content, created_at, title FROM TICKETS
 `
 
-func (q *Queries) GetTickets(ctx context.Context) ([]Ticket, error) {
-	rows, err := q.db.QueryContext(ctx, getTickets)
+func (q *Queries) GetAllTickets(ctx context.Context) ([]Ticket, error) {
+	rows, err := q.db.QueryContext(ctx, getAllTickets)
 	if err != nil {
 		return nil, err
 	}
@@ -22,7 +23,12 @@ func (q *Queries) GetTickets(ctx context.Context) ([]Ticket, error) {
 	items := []Ticket{}
 	for rows.Next() {
 		var i Ticket
-		if err := rows.Scan(&i.ID, &i.Content, &i.CreatedAt); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.Content,
+			&i.CreatedAt,
+			&i.Title,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -34,4 +40,24 @@ func (q *Queries) GetTickets(ctx context.Context) ([]Ticket, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const insertTicket = `-- name: InsertTicket :one
+INSERT INTO TICKETS
+    (title, content)
+VALUES
+    (?1, ?2)
+RETURNING ID
+`
+
+type InsertTicketParams struct {
+	Title   string         `json:"title"`
+	Content sql.NullString `json:"content"`
+}
+
+func (q *Queries) InsertTicket(ctx context.Context, arg InsertTicketParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, insertTicket, arg.Title, arg.Content)
+	var id int64
+	err := row.Scan(&id)
+	return id, err
 }

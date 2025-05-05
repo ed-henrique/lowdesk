@@ -15,10 +15,10 @@ RUN templ generate
 RUN apk add --no-cache gcc musl-dev
 
 # Build the application
-RUN CGO_ENABLED=1 GOOS=linux go build -o main ./main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/web/main.go
 
 # Deploy-Stage
-FROM alpine:3.20.2
+FROM alpine:3.21.3
 WORKDIR /app
 
 # Install ca-certificates
@@ -31,7 +31,7 @@ ENV GO_ENV=production
 COPY --from=build /app/main .
 
 # Expose the port your application runs on
-EXPOSE 8090
+EXPOSE 8080
 
 # Command to run the application
 CMD ["./main"]

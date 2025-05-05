@@ -1,0 +1,87 @@
+package pages
+
+import (
+	"github.com/axzilla/templui/component/button"
+	"github.com/axzilla/templui/component/card"
+	"github.com/axzilla/templui/component/form"
+	"github.com/axzilla/templui/component/input"
+	"github.com/axzilla/templui/component/textarea"
+	"github.com/ed-henrique/lowdesk/internal/models"
+	"github.com/ed-henrique/lowdesk/internal/ui/layouts"
+)
+
+templ TicketsGetAll(tickets []models.Ticket) {
+	@layouts.BaseLayout() {
+		<div class="flex justify-center items-center min-h-screen">
+			<div class="flex flex-col gap-6 items-center justify-center px-4 w-full max-w-3xl py-16">
+				<div class="grid">
+					for _, ticket := range tickets {
+						@card.Card() {
+							@card.Header() {
+								@card.Title() {
+									{ ticket.Title }
+								}
+								@card.Description() {
+									{ ticket.Content.String }
+								}
+							}
+							@card.Content() {
+								@form.Item() {
+									@form.Label(form.LabelProps{
+										For: "title-form",
+									}) {
+										Title
+									}
+									@input.Input(input.Props{
+										ID:          "title-form",
+										Name:        "title-form",
+										Type:        input.TypeText,
+										Placeholder: "Ticket Title",
+										HasError:    true,
+										Required:    true,
+									})
+									@form.Message(form.MessageProps{
+										Variant: form.MessageVariantError,
+									}) {
+										The title is required
+									}
+								}
+								@form.Item() {
+									@form.Label(form.LabelProps{
+										For: "content-form",
+									}) {
+										Content
+									}
+									@textarea.Textarea(textarea.Props{
+										ID:          "content-form",
+										Name:        "content-form",
+										Placeholder: "Ticket Content",
+										Class:       "border-red-500",
+										Required:    true,
+										AutoResize:  true,
+										Rows:        3,
+									})
+									@form.Message(form.MessageProps{
+										Variant: form.MessageVariantError,
+									}) {
+										The content is required
+									}
+								}
+							}
+							@card.Footer(card.FooterProps{
+								Class: "flex justify-end",
+							}) {
+								@button.Button(button.Props{
+									Variant: button.VariantOutline,
+									Type:    button.TypeSubmit,
+								}) {
+									Submit
+								}
+							}
+						}
+					}
+				</div>
+			</div>
+		</div>
+	}
+}
