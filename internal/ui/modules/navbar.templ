@@ -22,6 +22,15 @@ templ Navbar() {
 				}) {
 					@dropdown.Item(dropdown.ItemProps{
 						Class: "cursor-pointer",
+						Href:  "/tickets/",
+					}) {
+						<span class="flex items-center">
+							@icon.Eye(icon.Props{Size: 16, Class: "mr-2"})
+							See
+						</span>
+					}
+					@dropdown.Item(dropdown.ItemProps{
+						Class: "cursor-pointer",
 						Href:  "/tickets/create/",
 					}) {
 						<span class="flex items-center">

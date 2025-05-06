@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"log/slog"
 	"net/http"
 
@@ -46,15 +45,12 @@ func APITicketsCreate(handlerName string, q *models.Queries) http.Handler {
 			http.Error(w, errMessage, http.StatusInternalServerError)
 		}
 
-		title := r.PostForm.Get("title")
-		content := r.PostForm.Get("content")
+		title := r.PostForm.Get("title-form")
+		content := r.PostForm.Get("content-form")
 
 		if _, err := q.InsertTicket(r.Context(), models.InsertTicketParams{
-			Title: title,
-			Content: sql.NullString{
-				Valid:  false,
-				String: content,
-			},
+			Title:   title,
+			Content: content,
 		}); err != nil {
 			errMessage := "could not insert ticket"
 			slog.Error(errMessage, slog.String("handler", handlerName), slog.String("err", err.Error()))

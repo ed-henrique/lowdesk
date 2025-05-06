@@ -15,57 +15,56 @@ import (
 )
 
 type Config struct {
-	IsDev bool
-	Addr  string
+	Addr string
 
-	// Ignored if IsDev is true
+	// Ignored if GO_ENV is not "production"
 	DBURI string
 }
 
 type Server struct {
-	isDev bool
-	addr  string
-	r     *http.ServeMux
-	q     *models.Queries
+	addr string
+	r    *http.ServeMux
+	q    *models.Queries
 }
 
 func New(sc Config) *Server {
-	var (
-		dbURI string
-		seed  bool
-	)
+	var dbURI string
 
-	if sc.IsDev {
+	goEnv := os.Getenv("GO_ENV")
+	switch goEnv {
+	case "production":
+		dbURI = sc.DBURI
+	case "test":
 		dbURI = ":memory:"
 		slog.SetLogLoggerLevel(slog.LevelDebug)
-	} else {
+	default:
 		dbURI = sc.DBURI
+		slog.SetLogLoggerLevel(slog.LevelDebug)
 	}
 
-	seed = sc.IsDev
-	dbConn, err := db.New(dbURI, seed)
+	dbConn, err := db.New(dbURI, goEnv != "production")
 	if err != nil {
 		slog.Error("could not open DB", slog.String("err", err.Error()))
 		os.Exit(1)
 	}
 
 	return &Server{
-		isDev: sc.IsDev,
-		addr:  sc.Addr,
-		r:     http.NewServeMux(),
-		q:     models.New(dbConn),
+		addr: sc.Addr,
+		r:    http.NewServeMux(),
+		q:    models.New(dbConn),
 	}
 }
 
 func (s *Server) AddRoutes() {
 	assetsHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if s.isDev {
+		isDev := os.Getenv("GO_ENV") != "production"
+		if isDev {
 			w.Header().Set("Cache-Control", "no-store")
 
 		}
 
 		var fs http.Handler
-		if s.isDev {
+		if isDev {
 			fs = http.FileServer(http.Dir("./assets"))
 		} else {
 			fs = http.FileServer(http.FS(assets.Assets))

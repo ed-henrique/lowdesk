@@ -4,13 +4,9 @@
 
 package models
 
-import (
-	"database/sql"
-)
-
 type Ticket struct {
-	ID        int64          `json:"id"`
-	Content   sql.NullString `json:"content"`
-	CreatedAt string         `json:"created_at"`
-	Title     string         `json:"title"`
+	ID        int64  `json:"id"`
+	Content   string `json:"content"`
+	CreatedAt string `json:"created_at"`
+	Title     string `json:"title"`
 }

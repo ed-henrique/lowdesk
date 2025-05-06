@@ -17,7 +17,7 @@ func main() {
 
 	s := server.New(server.Config{
 		Addr:  ":8080",
-		IsDev: os.Getenv("GO_ENV") != "production",
+		DBURI: "db.sqlite3",
 	})
 
 	s.AddRoutes()

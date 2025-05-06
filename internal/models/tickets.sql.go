@@ -7,7 +7,6 @@ package models
 
 import (
 	"context"
-	"database/sql"
 )
 
 const getAllTickets = `-- name: GetAllTickets :many
@@ -51,8 +50,8 @@ RETURNING ID
 `
 
 type InsertTicketParams struct {
-	Title   string         `json:"title"`
-	Content sql.NullString `json:"content"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
 }
 
 func (q *Queries) InsertTicket(ctx context.Context, arg InsertTicketParams) (int64, error) {

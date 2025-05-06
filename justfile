@@ -1,3 +1,5 @@
+default: dev
+
 # Run templ generation in watch mode to detect all .templ files and 
 # re-create _templ.txt files on change, then send reload event to browser. 
 # Default url: http://localhost:7331
@@ -13,6 +15,7 @@ server:
 	--build.exclude_dir "node_modules" \
 	--build.include_ext "go" \
 	--build.include_ext "sql" \
+	--build.include_ext "templ" \
 	--build.stop_on_error "false" \
 	--misc.clean_on_exit true
 
@@ -21,9 +24,11 @@ tailwind-clean:
 
 # Run tailwindcss to generate the styles.css bundle in watch mode.
 tailwind-watch:
-	tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --watch
+	tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --watch --minify
 
 # Start development server
-dev:
-	make tailwind-clean
-	make -j3 tailwind-watch templ server
+dev: tailwind-clean
+	#!/usr/bin/env -S parallel --shebang --ungroup --jobs 3
+	just tailwind-watch
+	just templ
+	just server

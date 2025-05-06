@@ -3,9 +3,7 @@ package pages
 import (
 	"github.com/axzilla/templui/component/button"
 	"github.com/axzilla/templui/component/card"
-	"github.com/axzilla/templui/component/form"
-	"github.com/axzilla/templui/component/input"
-	"github.com/axzilla/templui/component/textarea"
+	"github.com/axzilla/templui/icon"
 	"github.com/ed-henrique/lowdesk/internal/models"
 	"github.com/ed-henrique/lowdesk/internal/ui/layouts"
 )
@@ -14,69 +12,30 @@ templ TicketsGetAll(tickets []models.Ticket) {
 	@layouts.BaseLayout() {
 		<div class="flex justify-center items-center min-h-screen">
 			<div class="flex flex-col gap-6 items-center justify-center px-4 w-full max-w-3xl py-16">
-				<div class="grid">
+				<div class="gap-5 grid grid-cols-2 w-full">
 					for _, ticket := range tickets {
 						@card.Card() {
 							@card.Header() {
-								@card.Title() {
+								@card.Title(card.TitleProps{
+									Class: "hyphens-auto line-clamp-1 text-justify",
+								}) {
 									{ ticket.Title }
 								}
-								@card.Description() {
-									{ ticket.Content.String }
-								}
 							}
-							@card.Content() {
-								@form.Item() {
-									@form.Label(form.LabelProps{
-										For: "title-form",
-									}) {
-										Title
-									}
-									@input.Input(input.Props{
-										ID:          "title-form",
-										Name:        "title-form",
-										Type:        input.TypeText,
-										Placeholder: "Ticket Title",
-										HasError:    true,
-										Required:    true,
-									})
-									@form.Message(form.MessageProps{
-										Variant: form.MessageVariantError,
-									}) {
-										The title is required
-									}
-								}
-								@form.Item() {
-									@form.Label(form.LabelProps{
-										For: "content-form",
-									}) {
-										Content
-									}
-									@textarea.Textarea(textarea.Props{
-										ID:          "content-form",
-										Name:        "content-form",
-										Placeholder: "Ticket Content",
-										Class:       "border-red-500",
-										Required:    true,
-										AutoResize:  true,
-										Rows:        3,
-									})
-									@form.Message(form.MessageProps{
-										Variant: form.MessageVariantError,
-									}) {
-										The content is required
-									}
-								}
-							}
-							@card.Footer(card.FooterProps{
-								Class: "flex justify-end",
+							@card.Content(card.ContentProps{
+								Class: "hyphens-auto line-clamp-5 text-justify",
 							}) {
-								@button.Button(button.Props{
-									Variant: button.VariantOutline,
-									Type:    button.TypeSubmit,
-								}) {
-									Submit
-								}
+								{ ticket.Content }
+							}
+							@card.Footer() {
+								<div class="flex gap-3 items-center justify-between w-full">
+									<div>
+										@icon.Heart(icon.Props{Size: 20, Color: "red"})
+									</div>
+									@button.Button() {
+										See More
+									}
+								</div>
 							}
 						}
 					}
